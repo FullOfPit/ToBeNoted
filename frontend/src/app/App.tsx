@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import Login from "./pages/Login";
+import Root from "../pages/Root";
 
 function App() {
   return (
     <div>
-      <Login/>
+      <Root/>
     </div>
   );
 }

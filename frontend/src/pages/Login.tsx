@@ -1,11 +1,12 @@
 import LoginPageForm from "../components/LoginPageForm";
+import MainLogo from "../components/MainLogo";
 
 
 export default function Login() {
 
     return (
         <div>
-            <h4>ToBeNoted</h4>
+            <MainLogo/>
             <LoginPageForm/>
         </div>
     )
