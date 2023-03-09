@@ -7,7 +7,6 @@ export default function Login() {
         <div>
             <h4>ToBeNoted</h4>
             <LoginPageForm/>
-
         </div>
     )
 }
