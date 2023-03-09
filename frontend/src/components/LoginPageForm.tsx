@@ -1,19 +1,18 @@
 import {
-    Box, Button,
+    Button,
     FormControl,
     IconButton,
     InputAdornment,
-    InputLabel,
-    OutlinedInput,
     TextField
 } from "@mui/material";
 import React, {useState} from "react";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {emptyCredentials, UserCredentials} from "../types/UserCredentials";
+import {mainTheme} from "../themes/MainTheme";
 
 
 export default function LoginPageForm () {
-    
+
     const [credentials, setCredentials] = useState<UserCredentials>(emptyCredentials)
 
     const handleInputLoginPageForm = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -22,8 +21,6 @@ export default function LoginPageForm () {
         setCredentials(
             {...credentials, [name]: value})
     }
-    //Todo
-    console.log(credentials);
 
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -31,12 +28,19 @@ export default function LoginPageForm () {
         event.preventDefault();
     };
 
+
     return (
-        <Box className={"flex-column-centered width-full"}>
+        <form
+            className={"flex-column-centered width-full"}
+        >
                 <FormControl
-                    className={"wide"}
+                    sx={{
+                        width: "80%",
+                        margin: mainTheme.spacing(1),
+                    }}
                 >
                     <TextField
+                        variant={"standard"}
                         label="Username"
                         name={"username"}
                         value={credentials.username}
@@ -45,46 +49,46 @@ export default function LoginPageForm () {
                 </FormControl>
 
                 <FormControl
-                    className={"wide spacer-micro"}
-                    variant="outlined"
+                    sx={{
+                        width: "80%",
+                        margin: mainTheme.spacing(1),
+                    }}
                 >
-
-                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-
-                    <OutlinedInput
-                        id="outlined-adornment-password"
+                    <TextField
+                        variant={"standard"}
                         type={showPassword ? 'text' : 'password'}
                         label="Password"
                         name={"password"}
                         value={credentials.password}
                         onChange={(event) => handleInputLoginPageForm(event)}
-                        endAdornment={
-                            <InputAdornment position="end">
+                        InputProps={{
+                            endAdornment:
+                                <InputAdornment position="end">
 
-                                <IconButton
+                                    <IconButton
                                     aria-label="toggle password visibility"
                                     onClick={handleClickShowPassword}
                                     onMouseDown={handleMouseDownPassword}
                                     edge="end"
-                                >
+                                    >
                                     {showPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
+                                    </IconButton>
 
-                            </InputAdornment>
-                        }
+                                </InputAdornment>
+                        }}
                     />
-
                 </FormControl>
 
-                <FormControl>
-
-                    <Button
-                        variant={"outlined"}
-                    >
+                <FormControl
+                    sx={{
+                        width: "50%",
+                        margin: mainTheme.spacing(1),
+                    }}
+                >
+                    <Button type={"submit"}>
                         Login
                     </Button>
-
                 </FormControl>
-        </Box>
+        </form>
     )
 }
