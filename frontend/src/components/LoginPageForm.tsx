@@ -8,8 +8,16 @@ export default function LoginPageForm () {
 
     const [credentials, setCredentials] = useState<UserCredentials>(emptyCredentials)
 
-    const [showPassword, setShowPassword] = useState(false);
+    const handleInputLoginPageForm = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const name = event.target.name;
+        const value = event.target.value;
+        setCredentials(
+            {...credentials, [name]: value})
+    }
+    //Todo
+    console.log(credentials);
 
+    const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
@@ -21,11 +29,12 @@ export default function LoginPageForm () {
                 sx={{ m: 1, width: '25ch' }}
                 variant="outlined"
             >
-
                 <TextField
                     label="Username"
+                    name={"username"}
+                    value={credentials.username}
+                    onChange={(event) => handleInputLoginPageForm(event)}
                 />
-
             </FormControl>
 
             <FormControl
@@ -38,6 +47,9 @@ export default function LoginPageForm () {
                     id="outlined-adornment-password"
                     type={showPassword ? 'text' : 'password'}
                     label="Password"
+                    name={"password"}
+                    value={credentials.password}
+                    onChange={(event) => handleInputLoginPageForm(event)}
                     endAdornment={
                         <InputAdornment position="end">
 

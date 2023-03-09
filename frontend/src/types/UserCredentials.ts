@@ -1,11 +1,11 @@
 type UserCredentials = {
-    name: string,
+    username: string,
     password: string,
 }
 export type {UserCredentials};
 
 const emptyCredentials: UserCredentials = {
-    name: "",
-    password: "",
+    username: " ",
+    password: " ",
 }
 export {emptyCredentials};
