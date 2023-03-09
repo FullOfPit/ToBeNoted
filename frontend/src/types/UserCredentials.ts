@@ -5,7 +5,7 @@ type UserCredentials = {
 export type {UserCredentials};
 
 const emptyCredentials: UserCredentials = {
-    username: " ",
-    password: " ",
+    username: "",
+    password: "",
 }
 export {emptyCredentials};

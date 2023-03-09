@@ -12,19 +12,14 @@ export const mainTheme = createTheme({
     },
     /*
     components: {
-        MuiButton: {
-             styleOverrides: {
-                 outlined: {
-                     borderColor: "#f50057"
-                 }
-             }
+        MuiOutlinedInput: {
         },
     },
-
-     */
     typography: {
         h4: {
             fontWeight: 100,
         },
     },
+
+     */
 });

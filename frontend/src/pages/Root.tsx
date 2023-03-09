@@ -9,6 +9,5 @@ export default function Root() {
         <ThemeProvider theme={mainTheme}>
            <Login/>
         </ThemeProvider>
-        
     )
 }
