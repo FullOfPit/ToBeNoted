@@ -6,7 +6,7 @@ export default function MainLogo() {
         <>
             <img src={logoBig}
                  alt={"main logo of staff management app called to be noted"}
-                 style={{maxWidth: "500px"}}
+                 style={{maxWidth: "500px", position:"relative", left: "10px"}}
             />
         </>
     )

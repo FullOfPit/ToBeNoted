@@ -10,6 +10,8 @@ export const mainTheme = createTheme({
             main: '#F57',
         },
     },
+    spacing: (spacer: number) => `${0.2 * spacer}rem`,
+
     /*
     components: {
         MuiOutlinedInput: {
