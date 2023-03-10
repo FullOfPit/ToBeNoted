@@ -5,7 +5,7 @@ import {
     InputAdornment,
     TextField
 } from "@mui/material";
-import React, {useState} from "react";
+import React, {FormEvent, useState} from "react";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {UserCredentials} from "../types/UserCredentials";
 import {mainTheme} from "../themes/MainTheme";
@@ -18,6 +18,7 @@ export default function LoginPageForm (
         userCredentialProp: {
             userCredentials: UserCredentials,
             setUserCredentials: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
+            login: (event: FormEvent<HTMLFormElement>) => void
         }
     }) {
 
@@ -30,6 +31,7 @@ export default function LoginPageForm (
 
     return (
         <form
+            onSubmit={(event) => userCredentialProp.login(event)}
             className={"flex-column-centered width-full"}
         >
                 <FormControl

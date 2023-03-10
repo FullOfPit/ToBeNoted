@@ -11,16 +11,6 @@ export default function Login() {
 
     const [credentials, setCredentials] = useState<UserCredentials>(emptyCredentials);
 
-    const userCredentialProp = {
-        userCredentials: credentials,
-        setUserCredentials: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-            const name = event.target.name;
-            const value = event.target.value;
-            setCredentials(
-                {...credentials, [name]: value})
-        }
-    }
-
     const login = useCallback(
         async (event: FormEvent<HTMLFormElement>) => {
             event.preventDefault();
@@ -30,12 +20,25 @@ export default function Login() {
                         "Authorization": "Basic " + window.btoa(`${credentials.username}:${credentials.password}`)
                     }
                 })
+                //ToDo
                 console.log("logged in")
             } catch (e) {
+                //ToDo
+                console.log("not logged in")
                 console.log(e)
             }
-        },
-        [credentials])
+        }, [credentials])
+
+    const userCredentialProp = {
+        userCredentials: credentials,
+        setUserCredentials: useCallback((event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            const name = event.target.name;
+            const value = event.target.value;
+            setCredentials(
+                {...credentials, [name]: value})
+        }, [credentials]),
+        login: login,
+    }
 
     return (
         <Box className={
