@@ -5,22 +5,22 @@ import {
     InputAdornment,
     TextField
 } from "@mui/material";
-import React, {useState} from "react";
+import React, {FormEvent, useState} from "react";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
-import {emptyCredentials, UserCredentials} from "../types/UserCredentials";
+import {UserCredentials} from "../types/UserCredentials";
 import {mainTheme} from "../themes/MainTheme";
 
 
-export default function LoginPageForm () {
-
-    const [credentials, setCredentials] = useState<UserCredentials>(emptyCredentials)
-
-    const handleInputLoginPageForm = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const name = event.target.name;
-        const value = event.target.value;
-        setCredentials(
-            {...credentials, [name]: value})
-    }
+export default function LoginPageForm (
+    {
+        userCredentialProp,
+    }:{
+        userCredentialProp: {
+            userCredentials: UserCredentials,
+            setUserCredentials: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
+            login: (event: FormEvent<HTMLFormElement>) => void
+        }
+    }) {
 
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -31,6 +31,7 @@ export default function LoginPageForm () {
 
     return (
         <form
+            onSubmit={(event) => userCredentialProp.login(event)}
             className={"flex-column-centered width-full"}
         >
                 <FormControl
@@ -43,8 +44,8 @@ export default function LoginPageForm () {
                         variant={"standard"}
                         label="Username"
                         name={"username"}
-                        value={credentials.username}
-                        onChange={(event) => handleInputLoginPageForm(event)}
+                        value={userCredentialProp.userCredentials.username}
+                        onChange={(event) => userCredentialProp.setUserCredentials(event)}
                     />
                 </FormControl>
 
@@ -59,8 +60,8 @@ export default function LoginPageForm () {
                         type={showPassword ? 'text' : 'password'}
                         label="Password"
                         name={"password"}
-                        value={credentials.password}
-                        onChange={(event) => handleInputLoginPageForm(event)}
+                        value={userCredentialProp.userCredentials.password}
+                        onChange={(event) => userCredentialProp.setUserCredentials(event)}
                         InputProps={{
                             endAdornment:
                                 <InputAdornment position="end">
