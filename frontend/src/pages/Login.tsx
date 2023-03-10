@@ -29,14 +29,18 @@ export default function Login() {
             }
         }, [credentials])
 
+    const setUserCredentials = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const name = event.target.name;
+        const value = event.target.value;
+        setCredentials(
+            {...credentials, [name]: value})
+        }, [credentials]
+    )
+
     const userCredentialProp = {
         userCredentials: credentials,
-        setUserCredentials: useCallback((event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-            const name = event.target.name;
-            const value = event.target.value;
-            setCredentials(
-                {...credentials, [name]: value})
-        }, [credentials]),
+        setUserCredentials: setUserCredentials,
         login: login,
     }
 
