@@ -4,6 +4,7 @@ import axios from "axios";
 export default function useAuthentication() {
 
     const [user, setUser] = useState<{username: string, role: string} | null>(null);
+    const [authReady, setAuthReady] = useState<boolean>(false)
 
     useEffect(() => {
         (async () => {
@@ -12,10 +13,12 @@ export default function useAuthentication() {
                 setUser(response.data);
             } catch (error) {
                 console.log(error)
+            } finally {
+                setAuthReady(true)
             }
         }) ()
     }, [])
 
-    return {user}
+    return {user, authReady}
 
 }

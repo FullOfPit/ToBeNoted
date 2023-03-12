@@ -1,12 +1,23 @@
-import React from "react";
+import React, {useMemo} from "react";
+import useAuthentication from "../hooks/useAuthentication";
+import {Navigate, useSearchParams} from "react-router-dom";
 
-export default function NoAuthentication({children}:{children: React.ReactNode}) {
+export default function NoAuthentication(
+    {
+        children
+    }:{
+        children: React.ReactNode
+    }) {
 
-    //Show Children is user is not logged in
+    const {user} = useAuthentication();
+    const [searchParams] = useSearchParams();
+    const redirect = useMemo(
+        () => searchParams.get("redirect") || "/", [searchParams]
+    )
 
     return (
         <div>
-            {children}
+            {!user ? children : <Navigate to={redirect}/>}
         </div>
     )
 }
