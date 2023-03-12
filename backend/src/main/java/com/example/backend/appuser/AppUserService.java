@@ -7,8 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class AppUserService {
@@ -16,18 +14,22 @@ public class AppUserService {
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Optional<AppUser> findByUsername(String username) {
+    public AppUser findByUsername(String username) {
 
-        return this.appUserRepository.findByUsername(username);
+        return this.appUserRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    public AppUser findByUsernameWithoutPassword(String username) {
+        AppUser appUser = this.findByUsername(username);
+        appUser.setPassword("");
+        return appUser;
     }
 
     public AppUser create(AppUser appUser) {
 
-        Optional<AppUser> existingUser = findByUsername(
-                appUser.getUsername()
-        );
-
-        if (existingUser.isPresent()) {
+        if (this.appUserRepository.findByUsername(appUser.getUsername()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
@@ -59,5 +61,4 @@ public class AppUserService {
         return appUser;
     }
 
-    
 }

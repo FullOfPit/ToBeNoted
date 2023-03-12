@@ -2,12 +2,7 @@ package com.example.backend.appuser;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/app-users")
@@ -17,8 +12,13 @@ public class AppUserController {
     private final AppUserService appUserService;
 
     @PostMapping("/login")
-    public Optional<AppUser> login() {
-        return appUserService.findByUsername(
+    public AppUser login() {
+        return this.me();
+    }
+
+    @GetMapping("/me")
+    public AppUser me() {
+        return appUserService.findByUsernameWithoutPassword(
                 SecurityContextHolder.getContext().getAuthentication().getName()
         );
     }

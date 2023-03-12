@@ -9,10 +9,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.Optional;
 
 @Configuration
 @RequiredArgsConstructor
@@ -37,13 +35,7 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService () {
         return username -> {
-            Optional<AppUser> user = appUserService.findByUsername(username);
-
-            if (user.isEmpty()) {
-                throw new UsernameNotFoundException(username);
-            }
-
-            AppUser appUser = user.get();
+            AppUser appUser = appUserService.findByUsername(username);
 
             return User.builder()
                     .username(appUser.getUsername())
