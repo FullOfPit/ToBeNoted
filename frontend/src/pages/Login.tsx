@@ -5,11 +5,13 @@ import {Box} from "@mui/material";
 import React, {FormEvent, useCallback, useState} from "react";
 import {emptyCredentials, UserCredentials} from "../types/UserCredentials";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 
 export default function Login() {
 
     const [credentials, setCredentials] = useState<UserCredentials>(emptyCredentials);
+    const navigate = useNavigate();
 
     const login = useCallback(
         async (event: FormEvent<HTMLFormElement>) => {
@@ -20,14 +22,11 @@ export default function Login() {
                         "Authorization": "Basic " + window.btoa(`${credentials.username}:${credentials.password}`)
                     }
                 })
-                //ToDo
-                console.log("logged in")
+                navigate("/")
             } catch (e) {
-                //ToDo
-                console.log("not logged in")
                 console.log(e)
             }
-        }, [credentials])
+        }, [credentials, navigate])
 
     const setUserCredentials = useCallback(
         (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
