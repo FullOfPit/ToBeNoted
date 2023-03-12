@@ -13,6 +13,7 @@ public class AppUser {
     String id;
     String username;
     String password;
+    String institution;
     String role;
     boolean eighteenYears;
 
