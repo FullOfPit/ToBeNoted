@@ -3,6 +3,8 @@ import {ThemeProvider} from "@mui/material";
 import {mainTheme} from "../themes/MainTheme";
 import {Route, Routes} from "react-router-dom";
 import Dashboard from "./Dashboard";
+import NoAuthentication from "../components/NoAuthentication";
+import Authentication from "../components/Authentication";
 
 
 export default function Root() {
@@ -11,10 +13,14 @@ export default function Root() {
         <ThemeProvider theme={mainTheme}>
             <Routes>
                 <Route path={"/login"} element={
-                    <Login/>
+                    <NoAuthentication>
+                        <Login/>
+                    </NoAuthentication>
                 }/>
                 <Route path={"/"} element={
-                    <Dashboard/>
+                    <Authentication>
+                        <Dashboard/>
+                    </Authentication>
                 }/>
             </Routes>
         </ThemeProvider>
