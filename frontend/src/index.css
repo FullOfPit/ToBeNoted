@@ -51,3 +51,14 @@ code {
 .wide {
   width: 80%;
 }
+
+.A {
+  display: flex;
+  justify-content: space-between;
+}
+
+.AA {
+  display: flex;
+  gap: 1rem;
+}
+

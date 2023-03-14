@@ -12,9 +12,25 @@ export const mainTheme = createTheme({
     },
     spacing: (spacer: number) => `${0.2 * spacer}rem`,
 
-    /*
     components: {
-        MuiOutlinedInput: {
+        MuiAppBar: {
+            styleOverrides: {
+                root: {
+                    background: "#FFFCF9"
+                }
+            }
+        },
+        MuiIconButton: {
+            variants: [
+                {
+                    props: {"aria-label": "round shadow"},
+                    style: {
+                        padding: 1,
+                        borderRadius: 50,
+                        boxShadow: "2px 2px 3px 1px"
+                    }
+                },
+            ]
         },
     },
     typography: {
@@ -23,5 +39,4 @@ export const mainTheme = createTheme({
         },
     },
 
-     */
 });
