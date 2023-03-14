@@ -72,7 +72,7 @@ export default function HeaderBar() {
             </List>
         </Box>
     );
-    
+
     return (
         <div>
             {(['left', 'right', 'top', 'bottom'] as const).map((anchor) => (
