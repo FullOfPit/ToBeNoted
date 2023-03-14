@@ -10,7 +10,6 @@ import MemberManagement from "./MemberManagement";
 import Archive from "./Archive";
 import HeaderBar from "../components/HeaderBar";
 
-
 export default function Root() {
     
     return (

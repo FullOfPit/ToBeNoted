@@ -10,6 +10,7 @@ export const mainTheme = createTheme({
             main: '#F57',
         },
     },
+
     spacing: (spacer: number) => `${0.2 * spacer}rem`,
 
     components: {
@@ -34,6 +35,24 @@ export const mainTheme = createTheme({
         },
     },
     typography: {
+        fontFamily: [
+            'Merriweather',
+            'serif',
+            '-apple-system',
+            'BlinkMacSystemFont',
+            '"Segoe UI"',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+        ].join(','),
+
+        fontWeightRegular: 400,
+        fontSize: 18,
+
         h4: {
             fontWeight: 100,
         },

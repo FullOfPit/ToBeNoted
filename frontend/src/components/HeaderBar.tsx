@@ -12,19 +12,29 @@ import {
     AssignmentIndRounded, LogoutRounded
 } from '@mui/icons-material';
 import SmallLogo from "./SmallLogo";
-import {useNavigate} from "react-router-dom";
-
-const pageIcons: { icon: React.ReactNode, linkTo: string}[] = [
-        {icon: <HouseRounded/>, linkTo: "/"},
-        {icon: <AssignmentIndRounded/>, linkTo: "/brief"},
-        {icon: <PeopleRounded/>, linkTo: "/staff"},
-        {icon: <Inventory2Rounded/>, linkTo: "/archive"},
-        {icon: <LogoutRounded/>, linkTo: "/logout"}
-];
+import {useLocation, useNavigate} from "react-router-dom";
+import {useCallback} from "react";
+import axios from "axios";
 
 export default function HeaderBar() {
 
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const logout = useCallback(async () => {
+        await axios.get("/api/app-users/logout");
+        navigate("/login?redirect=" + encodeURIComponent(location.pathname + location.search));
+        window.document.cookie = "";
+        window.localStorage.clear();
+    }, [location, navigate]);
+
+    const pageIcons: { icon: React.ReactNode, linkTo: string}[] = [
+        {icon: <HouseRounded/>, linkTo: "/"},
+        {icon: <AssignmentIndRounded/>, linkTo: "/brief"},
+        {icon: <PeopleRounded/>, linkTo: "/staff"},
+        {icon: <Inventory2Rounded/>, linkTo: "/archive"},
+        {icon: <LogoutRounded onClick={() => logout()}/>, linkTo: "/"}
+    ];
 
     return (
         <AppBar position={"static"}>
