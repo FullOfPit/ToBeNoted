@@ -8,6 +8,7 @@ import Authentication from "../components/Authentication";
 import BriefingDocument from "./BriefingDocument";
 import MemberManagement from "./MemberManagement";
 import Archive from "./Archive";
+import HeaderBar from "../components/HeaderBar";
 
 
 export default function Root() {
@@ -24,24 +25,28 @@ export default function Root() {
 
                 <Route path={"/"} element={
                     <Authentication>
+                        <HeaderBar/>
                         <Dashboard/>
                     </Authentication>
                 }/>
 
                 <Route path={"/brief"} element={
                     <Authentication>
+                        <HeaderBar/>
                         <BriefingDocument/>
                     </Authentication>
                 }/>
 
                 <Route path={"/staff"} element={
                     <Authentication>
+                        <HeaderBar/>
                         <MemberManagement/>
                     </Authentication>
                 }/>
 
                 <Route path={"/archive"} element={
                    <Authentication>
+                       <HeaderBar/>
                        <Archive/>
                    </Authentication>
                 }/>

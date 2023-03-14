@@ -1,5 +1,10 @@
 import * as React from 'react';
-import {AppBar, Container, IconButton, Toolbar} from "@mui/material";
+import {
+    AppBar,
+    Container,
+    IconButton,
+    Toolbar
+} from "@mui/material";
 import {
     HouseRounded,
     PeopleRounded,
@@ -7,16 +12,19 @@ import {
     AssignmentIndRounded, LogoutRounded
 } from '@mui/icons-material';
 import SmallLogo from "./SmallLogo";
+import {useNavigate} from "react-router-dom";
 
-const pageIcons = [
-    <HouseRounded/>,
-    <AssignmentIndRounded/>,
-    <PeopleRounded/>,
-    <Inventory2Rounded/>,
-    <LogoutRounded/>
+const pageIcons: { icon: React.ReactNode, linkTo: string}[] = [
+        {icon: <HouseRounded/>, linkTo: "/"},
+        {icon: <AssignmentIndRounded/>, linkTo: "/brief"},
+        {icon: <PeopleRounded/>, linkTo: "/staff"},
+        {icon: <Inventory2Rounded/>, linkTo: "/archive"},
+        {icon: <LogoutRounded/>, linkTo: "/logout"}
 ];
 
 export default function HeaderBar() {
+
+    const navigate = useNavigate();
 
     return (
         <AppBar position={"static"}>
@@ -24,12 +32,14 @@ export default function HeaderBar() {
                 <Toolbar className={"A"}>
                     <SmallLogo/>
                     <div className={"AA"}>
-                        {pageIcons.map((icon) =>
+                        {pageIcons.map((pageIcon) =>
                             <IconButton
+                                key={pageIcon.linkTo}
                                 sx={{padding: 1.5}}
                                 aria-label="round shadow"
+                                onClick={() => navigate(pageIcon.linkTo)}
                             >
-                                {icon}
+                                {pageIcon.icon}
                             </IconButton>
                         )}
                     </div>
