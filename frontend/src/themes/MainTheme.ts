@@ -14,6 +14,7 @@ export const mainTheme = createTheme({
     spacing: (spacer: number) => `${0.2 * spacer}rem`,
 
     components: {
+
         MuiAppBar: {
             styleOverrides: {
                 root: {
@@ -21,6 +22,7 @@ export const mainTheme = createTheme({
                 }
             }
         },
+
         MuiIconButton: {
             variants: [
                 {
@@ -33,6 +35,18 @@ export const mainTheme = createTheme({
                 },
             ]
         },
+
+        MuiCard: {
+            variants: [
+                {
+                    props: {"aria-label": "dashboard"},
+                    style: {
+                        boxShadow: "2px 2px 3px 1px"
+                    }
+                }
+            ]
+        }
+
     },
     typography: {
         fontFamily: [

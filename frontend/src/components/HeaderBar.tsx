@@ -33,7 +33,7 @@ export default function HeaderBar() {
         {icon: <AssignmentIndRounded/>, linkTo: "/brief"},
         {icon: <PeopleRounded/>, linkTo: "/staff"},
         {icon: <Inventory2Rounded/>, linkTo: "/archive"},
-        {icon: <LogoutRounded onClick={() => logout()}/>, linkTo: "/"}
+        {icon: <LogoutRounded onClick={() => logout()}/>, linkTo: "/login"}
     ];
 
     return (
