@@ -21,6 +21,7 @@ export default function Dashboard() {
         >
             {pageList.map((page) =>
                 <Card
+                    aria-label={"dashboard"}
                     key={page.pageName}
                     sx={{
                         maxWidth: 400,
