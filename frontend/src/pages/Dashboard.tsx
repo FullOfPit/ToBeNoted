@@ -1,7 +1,10 @@
 import * as React from "react";
-import {Card, CardContent, Typography} from "@mui/material";
+import {Card, CardContent, Stack, Typography} from "@mui/material";
+import {useNavigate} from "react-router-dom";
 
 export default function Dashboard() {
+
+    const navigate = useNavigate();
 
     const pageList: { pageName: string, linkTo: string}[] = [
         {pageName: "Briefing Document", linkTo: "/brief"},
@@ -10,22 +13,30 @@ export default function Dashboard() {
     ];
 
     return (
-        <div>
+        <Stack
+            spacing={5}
+            justifyContent={"flex-start"}
+            alignItems={"center"}
+            sx={{paddingTop: 50}}
+        >
             {pageList.map((page) =>
-                <Card sx={{maxWidth: 400, minWidth: 275 }}>
-                    <CardContent>
+                <Card
+                    key={page.pageName}
+                    sx={{
+                        maxWidth: 400,
+                        minWidth: 350
+                    }}>
+                    <CardContent onClick={() => navigate(page.linkTo)}>
 
-                        <Typography variant="h5" component="div">
+                        <Typography
+                            textAlign="center"
+                            variant="h5"
+                            component="div">
                             {page.pageName}
                         </Typography>
 
-                        <Typography variant="body2">
-                            well meaning and kindly.
-                            <br />
-                            {'"a benevolent smile"'}
-                        </Typography>
                     </CardContent>
                 </Card>)}
-        </div>
+        </Stack>
     )
 }
