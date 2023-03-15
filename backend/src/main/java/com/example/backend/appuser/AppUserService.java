@@ -7,6 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AppUserService {
@@ -61,4 +63,14 @@ public class AppUserService {
         return appUser;
     }
 
+    public List<AppUser> findStaffByInstitutionAndRoleWithoutPassword(String institution) {
+        return this.appUserRepository.findAllByInstitutionAndRole(institution, "STAFF");
+    }
+
+    public AppUser createNewStaffMember(AppUser newStaffUser, String institution) {
+        newStaffUser.setInstitution(institution);
+        newStaffUser.setRole("STAFF");
+        newStaffUser.setPassword("");
+        return this.appUserRepository.save(newStaffUser);
+    }
 }
