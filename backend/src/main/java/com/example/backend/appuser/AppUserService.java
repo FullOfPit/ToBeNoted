@@ -73,4 +73,13 @@ public class AppUserService {
         newStaffUser.setPassword("");
         return this.appUserRepository.save(newStaffUser);
     }
+
+    public void deleteStaffMemberById(AppUser currentManagerUser,String id) {
+        AppUser staffMemberToDelete = this.appUserRepository.findById(id).orElseThrow();
+        if (currentManagerUser.getRole().equals("BASIC") &&
+                        staffMemberToDelete.getInstitution().equals(currentManagerUser.getInstitution()))
+        {
+            this.appUserRepository.deleteById(id);
+        }
+    }
 }

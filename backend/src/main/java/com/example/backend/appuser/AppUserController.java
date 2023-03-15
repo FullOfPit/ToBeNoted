@@ -21,7 +21,7 @@ public class AppUserController {
 
     @GetMapping("/me")
     public AppUser me() {
-        return appUserService.findByUsernameWithoutPassword(
+        return this.appUserService.findByUsernameWithoutPassword(
                 SecurityContextHolder.getContext().getAuthentication().getName()
         );
     }
@@ -34,13 +34,19 @@ public class AppUserController {
     @GetMapping("/staff")
     public List<AppUser> getAllStaffMemberWithoutPassword () {
         AppUser currentUser = this.me();
-        return appUserService.findStaffByInstitutionAndRoleWithoutPassword(currentUser.getInstitution());
+        return this.appUserService.findStaffByInstitutionAndRoleWithoutPassword(currentUser.getInstitution());
     }
 
     @PostMapping("/staff")
     public AppUser createStaffMember(@RequestBody AppUser newStaffUser) {
         AppUser currentManagerUser = this.me();
-        return appUserService.createNewStaffMember(newStaffUser, currentManagerUser.getInstitution());
+        return this.appUserService.createNewStaffMember(newStaffUser, currentManagerUser.getInstitution());
+    }
+
+    @DeleteMapping("/staff/{id}")
+    public void deleteStaffMemberById(@PathVariable String id) {
+        AppUser currentManagerUser = this.me();
+        this.appUserService.deleteStaffMemberById(currentManagerUser, id);
     }
 
     @GetMapping("/logout")
