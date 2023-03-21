@@ -14,7 +14,6 @@ export const mainTheme = createTheme({
     spacing: (spacer: number) => `${0.2 * spacer}rem`,
 
     components: {
-
         MuiAppBar: {
             styleOverrides: {
                 root: {
@@ -51,7 +50,6 @@ export const mainTheme = createTheme({
     typography: {
         fontFamily: [
             'Merriweather',
-            'serif',
             '-apple-system',
             'BlinkMacSystemFont',
             '"Segoe UI"',
@@ -65,11 +63,10 @@ export const mainTheme = createTheme({
         ].join(','),
 
         fontWeightRegular: 400,
-        fontSize: 18,
+        fontSize: 16,
 
         h4: {
             fontWeight: 100,
         },
     },
-
 });

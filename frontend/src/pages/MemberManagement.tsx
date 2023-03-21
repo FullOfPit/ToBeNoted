@@ -1,6 +1,11 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {StaffMember} from "../types/StaffMember";
 import axios from "axios";
+import {Stack} from "@mui/material";
+import MemberCard from "../components/MemberCard"
+import EditButton from "../components/buttons/EditButton";
+import DeleteButton from "../components/buttons/DeleteButton";
+import AddButton from "../components/buttons/AddButton";
 
 export default function MemberManagement() {
 
@@ -19,11 +24,22 @@ export default function MemberManagement() {
         })()
     }, []);
 
-
-
     return (
-        <div>
-            {staffList.map((member) => <p key={member.username}>{member.username}</p>)}
-        </div>
+        <Stack
+            spacing={2}
+            justifyContent={"flex-start"}
+            alignItems={"center"}
+            sx={{paddingTop: 20}}
+        >
+            {staffList.map((member) =>
+                <MemberCard
+                    key={member.username}
+                    user={member}
+                    buttons={[<EditButton/>, <DeleteButton/>]}
+                /> )
+            }
+
+            <AddButton/>
+        </Stack>
     )
 }

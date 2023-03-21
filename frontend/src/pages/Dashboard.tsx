@@ -26,13 +26,17 @@ export default function Dashboard() {
                     sx={{
                         maxWidth: 400,
                         minWidth: 350
-                    }}>
-                    <CardContent onClick={() => navigate(page.linkTo)}>
+                    }}
+                    onClick={() => navigate(page.linkTo)}
+                >
+                    <CardContent>
 
                         <Typography
                             textAlign="center"
                             variant="h5"
-                            component="div">
+                            component="div"
+                            fontFamily={"Merriweather"}
+                        >
                             {page.pageName}
                         </Typography>
 
