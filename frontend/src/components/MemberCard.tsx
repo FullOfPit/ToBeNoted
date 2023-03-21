@@ -1,5 +1,5 @@
 import {StaffMember} from "../types/StaffMember";
-import {Button, Card, CardActions, CardContent, Checkbox, Typography} from "@mui/material";
+import {Card, CardActions, CardContent, Checkbox, Stack, Typography} from "@mui/material";
 import React from "react";
 
 export default function UserCard(
@@ -8,27 +8,41 @@ export default function UserCard(
         buttons
     }:{
         user: StaffMember
-        buttons: {
-            icons: React.ReactNode[]
-        }
+        buttons?: React.ReactNode[]
     }) {
 
     return (
-        <Card sx={{ minWidth: 275 }}>
-            <CardContent>
-                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                    {user.username}
-                </Typography>
+        <Card sx={{ maxWidth: 400 , minWidth: 275 }}>
+            <Stack direction={"row"}
+                   alignContent={"center"}
+            >
+                <CardContent sx={{flexGrow: 1}}>
 
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    Eighteen Years or older
-                </Typography>
+                    <Typography sx={{ fontSize: 26}} color="text.secondary">
+                        {user.username}
+                    </Typography>
 
-                <Checkbox checked={user.eighteenYears}/>
-            </CardContent>
-            <CardActions>
-                <Button size="small">Learn More</Button>
-            </CardActions>
+                    <Stack
+                        direction={"row"}
+                        alignItems={"center"}
+                    >
+                        <Typography sx={{ fontSize: 14 }} color="text.secondary">
+                            18 y/o:
+                        </Typography>
+
+                        <Checkbox checked={user.eighteenYears}/>
+                    </Stack>
+                </CardContent>
+                <CardActions>
+                    <Stack
+                        spacing={0}
+                        direction={"column"}
+
+                    >
+                        {buttons ? buttons.map((icon) => <> {icon} </>) :  <Typography>L</Typography>}
+                    </Stack>
+                </CardActions>
+            </Stack>
         </Card>
     )
 }
