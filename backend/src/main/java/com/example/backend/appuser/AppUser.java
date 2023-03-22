@@ -17,6 +17,8 @@ public class AppUser {
     String role;
     boolean eighteenYears;
 
+    //jackson annotations - mixify (invite - access read only)
+
 
 
 }

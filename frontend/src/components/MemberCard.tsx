@@ -37,9 +37,8 @@ export default function UserCard(
                     <Stack
                         spacing={0}
                         direction={"column"}
-
                     >
-                        {buttons ? buttons.map((icon) => <> {icon} </>) :  <Typography>L</Typography>}
+                        {buttons ? buttons.map((icon) => <> {icon} </>) :  null}
                     </Stack>
                 </CardActions>
             </Stack>
