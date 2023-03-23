@@ -28,12 +28,12 @@ export default function HeaderBar() {
         window.localStorage.clear();
     }, [location, navigate]);
 
-    const pageIcons: { icon: React.ReactNode, linkTo: string}[] = [
-        {icon: <HouseRounded/>, linkTo: "/"},
-        {icon: <AssignmentIndRounded/>, linkTo: "/brief"},
-        {icon: <PeopleRounded/>, linkTo: "/staff"},
-        {icon: <Inventory2Rounded/>, linkTo: "/archive"},
-        {icon: <LogoutRounded onClick={() => logout()}/>, linkTo: "/login"}
+    const pageIcons: { icon: React.ReactNode, key: string, buttonFunction: () => void }[] = [
+        {icon: <HouseRounded/>, key: "home", buttonFunction: () => navigate("/")},
+        {icon: <AssignmentIndRounded/>, key: "brief", buttonFunction: () => navigate("/brief")},
+        {icon: <PeopleRounded/>, key: "staff", buttonFunction: () => navigate("/staff")},
+        {icon: <Inventory2Rounded/>, key: "archive", buttonFunction: () => navigate("/archive")},
+        {icon: <LogoutRounded />, key: "logout", buttonFunction: () => logout()}
     ];
 
     return (
@@ -44,10 +44,10 @@ export default function HeaderBar() {
                     <div className={"AA"}>
                         {pageIcons.map((pageIcon) =>
                             <IconButton
-                                key={pageIcon.linkTo}
+                                key={pageIcon.key}
                                 sx={{padding: 1.5}}
                                 aria-label="round shadow"
-                                onClick={() => navigate(pageIcon.linkTo)}
+                                onClick={() => pageIcon.buttonFunction()}
                             >
                                 {pageIcon.icon}
                             </IconButton>
