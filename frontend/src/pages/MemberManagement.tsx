@@ -10,6 +10,7 @@ export default function MemberManagement() {
 
     const {staff} = useStaffMembers();
     const deleteMember = staff.deleteMember;
+    const addMember = staff.addMember;
 
     return (
         <Stack
@@ -20,14 +21,12 @@ export default function MemberManagement() {
         >
             {staff.staffList.map((member) =>
                 <MemberCard
-                    key={member.username}
+                    key={member.id}
                     user={member}
-                    buttons={[<EditButton/>, <DeleteButton id={member.username} methodFunction={deleteMember}/>]}
+                    buttons={[<EditButton/>, <DeleteButton id={member.id} methodFunction={deleteMember}/>]}
                 /> )
             }
-
-            <AddButton/>
-            <DeleteButton/>
+            <AddButton id={"henlo"} methodFunction={addMember}/>
         </Stack>
     )
 }

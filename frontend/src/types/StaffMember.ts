@@ -1,4 +1,6 @@
 type StaffMember = {
+
+    id: string,
     username: string,
     eighteenYears: boolean
 }

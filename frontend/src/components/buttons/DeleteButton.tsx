@@ -13,10 +13,10 @@ export default function DeleteButton(
 
     return (
         <IconButton
-            key={"EditButton"}
+            key={"DeleteButton"}
             sx={{padding: 1.5}}
             aria-label="round shadow"
-            onClick={ methodFunction && id? () => methodFunction(id) : undefined}
+            onClick={methodFunction && id? () => methodFunction(id) : undefined}
         >
             {<DeleteForeverRounded/>}
         </IconButton>

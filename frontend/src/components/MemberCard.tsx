@@ -2,7 +2,7 @@ import {StaffMember} from "../types/StaffMember";
 import {Card, CardActions, CardContent, Checkbox, Stack, Typography} from "@mui/material";
 import React from "react";
 
-export default function UserCard(
+export default function MemberCard(
     {
         user,
         buttons
@@ -38,7 +38,7 @@ export default function UserCard(
                         spacing={0}
                         direction={"column"}
                     >
-                        {buttons ? buttons.map((icon) => <> {icon} </>) :  null}
+                        {buttons ? buttons.map((icon) => <div key={buttons.indexOf(icon)}> {icon} </div>) :  null}
                     </Stack>
                 </CardActions>
             </Stack>
