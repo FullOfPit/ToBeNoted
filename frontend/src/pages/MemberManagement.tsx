@@ -20,14 +20,12 @@ export default function MemberManagement() {
         >
             {staff.staffList.map((member) =>
                 <MemberCard
-                    key={member.username}
+                    key={member.id}
                     user={member}
                     buttons={[<EditButton/>, <DeleteButton id={member.id} methodFunction={deleteMember}/>]}
                 /> )
             }
-
             <AddButton/>
-            <DeleteButton/>
         </Stack>
     )
 }

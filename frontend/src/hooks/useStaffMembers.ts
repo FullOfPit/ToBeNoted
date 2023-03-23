@@ -13,7 +13,7 @@ export default function useStaffMembers() {
                 const response = await axios.get("/api/app-users/staff");
                 setStaffList(response.data);
                 //TODO
-                console.log(response.data)
+                //console.log(response.data)
             } catch (error) {
                 //TODO
                 console.log(error)
