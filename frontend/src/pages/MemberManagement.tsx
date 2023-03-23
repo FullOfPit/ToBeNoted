@@ -10,6 +10,7 @@ export default function MemberManagement() {
 
     const {staff} = useStaffMembers();
     const deleteMember = staff.deleteMember;
+    const addMember = staff.addMember;
 
     return (
         <Stack
@@ -25,7 +26,7 @@ export default function MemberManagement() {
                     buttons={[<EditButton/>, <DeleteButton id={member.id} methodFunction={deleteMember}/>]}
                 /> )
             }
-            <AddButton/>
+            <AddButton id={"henlo"} methodFunction={addMember}/>
         </Stack>
     )
 }

@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useState} from "react";
 import {StaffMember} from "../types/StaffMember";
 import axios from "axios";
+import {wait} from "@testing-library/user-event/dist/utils";
 
 export default function useStaffMembers() {
 
@@ -21,6 +22,16 @@ export default function useStaffMembers() {
         })()
     }, []);
 
+    const newMember: StaffMember = {
+        id: "new id",
+        username: "new name",
+        eighteenYears: false,
+    }
+
+    const testAdd = (id: string) => {
+        setStaffList([...staffList ,newMember])
+    }
+
     const deleteMember = useCallback((id: string) => {
         //TODO abstract it to a generic delete function
         (async () => {
@@ -33,14 +44,14 @@ export default function useStaffMembers() {
         })()
     }, [staffList])
 
-
-
     const staff: {
         staffList: StaffMember[],
         deleteMember: (id: string) => void,
+        addMember: (id: string) => void,
     } = {
         staffList: staffList,
         deleteMember: deleteMember,
+        addMember: testAdd,
     }
 
     return (
