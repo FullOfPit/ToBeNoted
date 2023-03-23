@@ -22,7 +22,7 @@ export default function MemberManagement() {
                 <MemberCard
                     key={member.username}
                     user={member}
-                    buttons={[<EditButton/>, <DeleteButton id={member.username} methodFunction={deleteMember}/>]}
+                    buttons={[<EditButton/>, <DeleteButton id={member.id} methodFunction={deleteMember}/>]}
                 /> )
             }
 
