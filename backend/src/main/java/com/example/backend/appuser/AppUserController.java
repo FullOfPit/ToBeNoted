@@ -1,8 +1,11 @@
 package com.example.backend.appuser;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -15,8 +18,16 @@ public class AppUserController {
     private final AppUserService appUserService;
 
     @PostMapping("/login")
-    public AppUser login() {
-        return this.me();
+    public ResponseEntity<AppUser> login() {
+        try {
+            return new ResponseEntity<>(
+                    this.appUserService.findByUsernameWithoutPassword(
+                            SecurityContextHolder.getContext().getAuthentication().getName()), HttpStatus.OK);
+        } catch (ResponseStatusException exception) {
+            return new ResponseEntity<>(
+                    HttpStatus.NOT_FOUND
+            );
+        }
     }
 
     @GetMapping("/me")
