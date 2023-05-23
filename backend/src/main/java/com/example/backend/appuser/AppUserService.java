@@ -16,6 +16,12 @@ public class AppUserService {
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public AppUser findByUsernameWithoutPassword(String username) {
+        AppUser appUser = this.findByUsername(username);
+        appUser.setPassword("");
+        return appUser;
+    }
+
     public AppUser findByUsername(String username) {
 
         return this.appUserRepository
@@ -23,11 +29,6 @@ public class AppUserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public AppUser findByUsernameWithoutPassword(String username) {
-        AppUser appUser = this.findByUsername(username);
-        appUser.setPassword("");
-        return appUser;
-    }
 
     public AppUser create(AppUser appUser) {
 
@@ -74,7 +75,7 @@ public class AppUserService {
         return this.appUserRepository.save(newStaffUser);
     }
 
-    public void deleteStaffMemberById(AppUser currentManagerUser,String id) {
+    public void deleteStaffMemberById(AppUser currentManagerUser, String id) {
         AppUser staffMemberToDelete = this.appUserRepository.findById(id).orElseThrow();
         if (currentManagerUser.getRole().equals("BASIC") &&
                         staffMemberToDelete.getInstitution().equals(currentManagerUser.getInstitution()))
