@@ -56,4 +56,12 @@ class AppUserControllerTest {
         this.mvc.perform(post("/api/app-users/login"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void login_Returns404_WhenUserNotRegistered_UsingHeaderRequest() throws Exception {
+
+        this.mvc.perform(post("/api/app-users/login")
+                            .header("Authorization", "Basic Zzpn"))
+                .andExpect(status().isNotFound());
+    }
 }

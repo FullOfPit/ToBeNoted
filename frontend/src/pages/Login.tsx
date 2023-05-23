@@ -4,7 +4,7 @@ import "../index.css"
 import {Box} from "@mui/material";
 import React, {FormEvent, useCallback, useState} from "react";
 import {emptyCredentials, UserCredentials} from "../types/UserCredentials";
-import axios from "axios";
+import axios, {AxiosError} from "axios";
 import {useNavigate} from "react-router-dom";
 
 
@@ -23,8 +23,12 @@ export default function Login() {
                     }
                 })
                 navigate("/")
-            } catch (e) {
-                console.log(e)
+            } catch (error) {
+                if (error instanceof AxiosError && error.response && error.response.status === 404) {
+                    console.log("not found");
+                } else {
+                    console.log(error)
+                }
             }
         }, [credentials, navigate])
 
