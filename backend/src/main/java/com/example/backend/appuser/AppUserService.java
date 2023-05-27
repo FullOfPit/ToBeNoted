@@ -74,6 +74,13 @@ public class AppUserService {
         return userList;
     }
 
+    public AppUser createNewStaffMember(AppUser newStaffUser, String institution) {
+        newStaffUser.setInstitution(institution);
+        newStaffUser.setRole(BASIC_ROLE);
+        newStaffUser.setPassword("");
+        return this.appUserRepository.save(newStaffUser);
+    }
+
     public void deleteStaffMemberById(AppUser currentManagerUser, String id) {
         AppUser staffMemberToDelete = this.appUserRepository.findById(id).orElseThrow();
         if (currentManagerUser.getRole().equals(BASIC_ROLE) &&
