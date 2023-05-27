@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,7 +20,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -195,5 +200,40 @@ class AppUserServiceTest {
         Assertions.assertEquals("", appUser.getPassword());
     }
 
+    @ParameterizedTest
+    @MethodSource("findBasicRoleUserByInstitutionAndRoleWithoutPasswordFactory")
+    void findBasicRoleUserByInstitutionAndRoleWithoutPassword_ReturnsListOfUserFromSameInstitution(
+            String institutionName,
+            String role,
+            List<AppUser> repoResponse,
+            List<AppUser> results
+    ) {
+        //GIVEN
+        when(appUserRepository.findAllByInstitutionAndRole(institutionName, role)).thenReturn(repoResponse);
+        //WHEN
+        List<AppUser> actual = appUserService.findBasicRoleUserByInstitutionAndRoleWithoutPassword(institutionName);
+        //THEN
+        Assertions.assertEquals(actual, results);
+        Assertions.assertTrue(actual.stream().allMatch(user -> user.getPassword().equals("")));
+    }
 
+    private static Stream<Arguments> findBasicRoleUserByInstitutionAndRoleWithoutPasswordFactory() {
+
+        final String NON_EXISTENT = "Non_Existent";
+        final String INSTITUTION_ONE = "Institution_One";
+
+        AppUser institutionOneUser = new AppUser(
+                " ",
+                " ",
+                "testPassword",
+                INSTITUTION_ONE,
+                " ",
+                true
+        );
+
+        return Stream.of(
+                Arguments.arguments(NON_EXISTENT, BASIC_ROLE ,List.of() ,List.of()),
+                Arguments.arguments(INSTITUTION_ONE, BASIC_ROLE, List.of(institutionOneUser), List.of(institutionOneUser))
+        );
+    }
 }

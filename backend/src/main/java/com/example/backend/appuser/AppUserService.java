@@ -69,14 +69,9 @@ public class AppUserService {
     }
 
     public List<AppUser> findBasicRoleUserByInstitutionAndRoleWithoutPassword(String institution) {
-        return this.appUserRepository.findAllByInstitutionAndRole(institution, BASIC_ROLE);
-    }
-
-    public AppUser createNewStaffMember(AppUser newStaffUser, String institution) {
-        newStaffUser.setInstitution(institution);
-        newStaffUser.setRole(BASIC_ROLE);
-        newStaffUser.setPassword("");
-        return this.appUserRepository.save(newStaffUser);
+        List<AppUser> userList = this.appUserRepository.findAllByInstitutionAndRole(institution, BASIC_ROLE);
+        userList.forEach(user -> user.setPassword(""));
+        return userList;
     }
 
     public void deleteStaffMemberById(AppUser currentManagerUser, String id) {
