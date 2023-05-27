@@ -1,19 +1,35 @@
 package com.example.backend.appuser;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class AppUserServiceTest {
 
     private static final AppUserRepository appUserRepository = mock(AppUserRepository.class);
+
+    @AfterEach
+    void tearDown () {
+        reset(appUserRepository);
+    }
     private static final PasswordEncoder encoder = mock(PasswordEncoder.class);
 
     private final AppUserService appUserService = new AppUserService(appUserRepository, encoder);
@@ -81,7 +97,101 @@ class AppUserServiceTest {
         //Given
         when(appUserRepository.findByUsername(TEST_USER.getUsername())).thenReturn(Optional.of(TEST_USER));
         //When - Then
-        Assertions.assertThrows(ResponseStatusException.class, () -> appUserService.create(TEST_USER));
+        try {
+            AppUser actual = appUserService.create(TEST_USER);
+            Assertions.fail();
+        } catch (ResponseStatusException exception) {
+            Assertions.assertEquals(HttpStatus.CONFLICT, exception.getStatus());
+        }
     }
+
+    @Test
+    void create_CreatesBasicUser_IfNotAuthenticationReturnsNull() {
+        //Given
+        SecurityContext securityContext = mock(SecurityContext.class);
+
+        when(appUserRepository.findByUsername("testUsername")).thenReturn(Optional.empty());
+        when(encoder.encode(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(securityContext.getAuthentication()).thenReturn(null);
+        SecurityContextHolder.setContext(securityContext);
+        //When
+        AppUser appUser = this.appUserService.create(TEST_USER);
+        //Then
+        Assertions.assertEquals("BASIC", appUser.getRole());
+        Assertions.assertEquals("", appUser.getPassword());
+
+    }
+
+    @Test
+    void create_CreatesBasicUser_IfUserIsNotAuthenticated() {
+        //Given
+        SecurityContext securityContext = mock(SecurityContext.class);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                " ",
+                " ",
+                List.of(new SimpleGrantedAuthority("ADMIN"))
+        );
+        authentication.setAuthenticated(false);
+
+        when(appUserRepository.findByUsername("testUsername")).thenReturn(Optional.empty());
+        when(encoder.encode(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        //When
+        AppUser appUser = this.appUserService.create(TEST_USER);
+        //Then
+        Assertions.assertEquals("BASIC", appUser.getRole());
+        Assertions.assertEquals("", appUser.getPassword());
+
+    }
+
+    @Test
+    void create_CreatesBasicUser_IfAuthenticatedUserIsNotAdmin() {
+        //Given
+        SecurityContext securityContext = mock(SecurityContext.class);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                " ",
+                " ",
+                List.of(new SimpleGrantedAuthority("NOT_ADMIN"))
+        );
+        when(appUserRepository.findByUsername("testUsername")).thenReturn(Optional.empty());
+        when(encoder.encode(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        //When
+        AppUser appUser = this.appUserService.create(TEST_USER);
+        //Then
+        Assertions.assertEquals("BASIC", appUser.getRole());
+        Assertions.assertEquals("", appUser.getPassword());
+
+    }
+
+    @Test
+    void create_CanCreateAdminUser_IfAdminIsUsed() {
+        //Given
+        SecurityContext securityContext = mock(SecurityContext.class);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                TEST_USER.getUsername(),
+                TEST_USER.getPassword(),
+                List.of(new SimpleGrantedAuthority("ADMIN"))
+        );
+
+        when(appUserRepository.findByUsername("testUsername")).thenReturn(Optional.empty());
+        when(encoder.encode(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        //When
+        AppUser appUser = this.appUserService.create(TEST_USER);
+        //Then
+        Assertions.assertEquals("testRole", appUser.getRole());
+        Assertions.assertEquals("", appUser.getPassword());
+
+    }
+
 
 }

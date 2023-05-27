@@ -29,7 +29,6 @@ public class AppUserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-
     public AppUser create(AppUser appUser) {
 
         if (this.appUserRepository.findByUsername(appUser.getUsername()).isPresent()) {
