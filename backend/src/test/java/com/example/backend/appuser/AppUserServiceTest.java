@@ -42,6 +42,9 @@ class AppUserServiceTest {
             "testRole",
             true
     );
+    private static final String ADMIN_ROLE = "ADMIN";
+    private static final String BASIC_ROLE = "STAFF";
+
 
     @Test
     void findByUsernameWithoutPassword_ReturnsNoPassword_ReturnsAllOtherFields_WhenUserRegistered() {
@@ -117,7 +120,7 @@ class AppUserServiceTest {
         //When
         AppUser appUser = this.appUserService.create(TEST_USER);
         //Then
-        Assertions.assertEquals("BASIC", appUser.getRole());
+        Assertions.assertEquals(BASIC_ROLE, appUser.getRole());
         Assertions.assertEquals("", appUser.getPassword());
 
     }
@@ -141,7 +144,7 @@ class AppUserServiceTest {
         //When
         AppUser appUser = this.appUserService.create(TEST_USER);
         //Then
-        Assertions.assertEquals("BASIC", appUser.getRole());
+        Assertions.assertEquals(BASIC_ROLE, appUser.getRole());
         Assertions.assertEquals("", appUser.getPassword());
 
     }
@@ -164,7 +167,7 @@ class AppUserServiceTest {
         //When
         AppUser appUser = this.appUserService.create(TEST_USER);
         //Then
-        Assertions.assertEquals("BASIC", appUser.getRole());
+        Assertions.assertEquals(BASIC_ROLE, appUser.getRole());
         Assertions.assertEquals("", appUser.getPassword());
 
     }
@@ -177,7 +180,7 @@ class AppUserServiceTest {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 TEST_USER.getUsername(),
                 TEST_USER.getPassword(),
-                List.of(new SimpleGrantedAuthority("ADMIN"))
+                List.of(new SimpleGrantedAuthority(ADMIN_ROLE))
         );
 
         when(appUserRepository.findByUsername("testUsername")).thenReturn(Optional.empty());
@@ -188,9 +191,8 @@ class AppUserServiceTest {
         //When
         AppUser appUser = this.appUserService.create(TEST_USER);
         //Then
-        Assertions.assertEquals("testRole", appUser.getRole());
+        Assertions.assertEquals(ADMIN_ROLE, appUser.getRole());
         Assertions.assertEquals("", appUser.getPassword());
-
     }
 
 

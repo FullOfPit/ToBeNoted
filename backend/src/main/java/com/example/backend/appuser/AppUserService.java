@@ -16,6 +16,9 @@ public class AppUserService {
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private static final String ADMIN_ROLE = "ADMIN";
+    private static final String BASIC_ROLE = "STAFF";
+
     public AppUser findByUsernameWithoutPassword(String username) {
         AppUser appUser = this.findByUsername(username);
         appUser.setPassword("");
@@ -51,9 +54,11 @@ public class AppUserService {
                         .getAuthentication()
                         .getAuthorities()
                         .stream()
-                        .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ADMIN"))
+                        .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(ADMIN_ROLE))
         ) {
-            appUser.setRole("BASIC");
+            appUser.setRole(BASIC_ROLE);
+        } else {
+            appUser.setRole(ADMIN_ROLE);
         }
 
         this.appUserRepository.save(appUser);
@@ -63,20 +68,20 @@ public class AppUserService {
         return appUser;
     }
 
-    public List<AppUser> findStaffByInstitutionAndRoleWithoutPassword(String institution) {
-        return this.appUserRepository.findAllByInstitutionAndRole(institution, "STAFF");
+    public List<AppUser> findBasicRoleUserByInstitutionAndRoleWithoutPassword(String institution) {
+        return this.appUserRepository.findAllByInstitutionAndRole(institution, BASIC_ROLE);
     }
 
     public AppUser createNewStaffMember(AppUser newStaffUser, String institution) {
         newStaffUser.setInstitution(institution);
-        newStaffUser.setRole("STAFF");
+        newStaffUser.setRole(BASIC_ROLE);
         newStaffUser.setPassword("");
         return this.appUserRepository.save(newStaffUser);
     }
 
     public void deleteStaffMemberById(AppUser currentManagerUser, String id) {
         AppUser staffMemberToDelete = this.appUserRepository.findById(id).orElseThrow();
-        if (currentManagerUser.getRole().equals("BASIC") &&
+        if (currentManagerUser.getRole().equals(BASIC_ROLE) &&
                         staffMemberToDelete.getInstitution().equals(currentManagerUser.getInstitution()))
         {
             this.appUserRepository.deleteById(id);

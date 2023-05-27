@@ -34,7 +34,7 @@ public class AppUserController {
     @GetMapping("/staff")
     public List<AppUser> getAllStaffMemberWithoutPassword () {
         AppUser currentUser = this.me();
-        return this.appUserService.findStaffByInstitutionAndRoleWithoutPassword(currentUser.getInstitution());
+        return this.appUserService.findBasicRoleUserByInstitutionAndRoleWithoutPassword(currentUser.getInstitution());
     }
 
     @PostMapping("/staff")
