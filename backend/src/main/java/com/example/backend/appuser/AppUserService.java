@@ -61,11 +61,9 @@ public class AppUserService {
                         .getAuthentication()
                         .getAuthorities()
                         .stream()
-                        .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(ADMIN_ROLE))
+                        .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_" + ADMIN_ROLE))
         ) {
             appUser.setRole(BASIC_ROLE);
-        } else {
-            appUser.setRole(ADMIN_ROLE);
         }
 
         this.appUserRepository.save(appUser);

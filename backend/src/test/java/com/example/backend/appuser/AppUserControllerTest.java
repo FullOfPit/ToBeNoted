@@ -17,10 +17,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AppUserControllerTest {
 
     @Autowired
-    MockMvc mvc;
+    private MockMvc mvc;
 
     @Autowired
-    AppUserRepository appUserRepository;
+    private AppUserRepository appUserRepository;
 
     private static final AppUser TEST_STAFF_USER_DB = new AppUser(
             "testId",
@@ -28,6 +28,15 @@ class AppUserControllerTest {
             "$2a$10$G09nodAof5kOyPSMcTcy2.ebSVoInWHbS1HgpAVlXJYmeHLNBEqk2",
             "testInstitution",
             "STAFF",
+            true
+    );
+
+    private static final AppUser TEST_ADMIN_USER_DB = new AppUser(
+            "testId",
+            "testUsername",
+            "$2a$10$G09nodAof5kOyPSMcTcy2.ebSVoInWHbS1HgpAVlXJYmeHLNBEqk2",
+            "testInstitution",
+            "ADMIN",
             true
     );
     //$2a$10$G09nodAof5kOyPSMcTcy2.ebSVoInWHbS1HgpAVlXJYmeHLNBEqk2
@@ -86,4 +95,59 @@ class AppUserControllerTest {
                 .andExpect(jsonPath("$.role").value("STAFF"))
                 .andExpect(jsonPath("$.eighteenYears").value("true"));
     }
+
+    @Test
+    void create_ReturnsUsers_WhenUserOfDifferentRolesCreatedByAdmin() throws Exception {
+        this.appUserRepository.save(TEST_ADMIN_USER_DB);
+
+        mvc.perform(post("/api/app-users")
+                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnRlc3RQYXNzd29yZA==")
+                        .contentType("application/json")
+                        .content("{\"role\": \"ADMIN\", \"username\": \"NewTestUser\", \"password\": \"NewTestPassword\", \"institution\": \"testInstitution\", \"eighteenYears\": \"true\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("NewTestUser"))
+                .andExpect(jsonPath("$.password").value(""))
+                .andExpect(jsonPath("$.institution").value("testInstitution"))
+                .andExpect(jsonPath("$.role").value("ADMIN"))
+                .andExpect(jsonPath("$.eighteenYears").value("true"));
+
+        mvc.perform(post("/api/app-users")
+                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnRlc3RQYXNzd29yZA==")
+                        .contentType("application/json")
+                        .content("{ \"role\": \"STAFF\", \"username\": \"NewTestUser2\", \"password\": \"NewTestPassword2\", \"institution\": \"testInstitution\", \"eighteenYears\": \"true\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("NewTestUser2"))
+                .andExpect(jsonPath("$.password").value(""))
+                .andExpect(jsonPath("$.institution").value("testInstitution"))
+                .andExpect(jsonPath("$.role").value("STAFF"))
+                .andExpect(jsonPath("$.eighteenYears").value("true"));
+    }
+
+    //TODO: GetAllStaffMembersWithoutPassword - check for roles
+    //TODO: DeleteById - check for admin, check for staff (FORBIDDEN), check for non-existing user (NOT_FOUND)
+
+    @Test
+    void create_ReturnsConflict_WhenUserAlreadyRegistered() throws Exception {
+        this.appUserRepository.save(TEST_STAFF_USER_DB);
+        this.appUserRepository.save(TEST_ADMIN_USER_DB);
+
+        mvc.perform(post("/api/app-users")
+                        .contentType("application/json")
+                        .content("{\"role\": \"STAFF\", \"username\": \"testUsername\", \"password\": \"testPassword\", \"institution\": \"testInstitution\", \"eighteenYears\": \"true\"}"))
+                .andExpect(status().isConflict());
+
+        mvc.perform(post("/api/app-users")
+                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnRlc3RQYXNzd29yZA==")
+                        .contentType("application/json")
+                        .content("{\"role\": \"STAFF\", \"username\": \"testUsername\", \"password\": \"testPassword\", \"institution\": \"testInstitution\", \"eighteenYears\": \"true\"}"))
+                .andExpect(status().isConflict());
+
+        mvc.perform(post("/api/app-users")
+                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnRlc3RQYXNzd29yZA==")
+                        .contentType("application/json")
+                        .content("{\"role\": \"ADMIN\", \"username\": \"testUsername\", \"password\": \"testPassword\", \"institution\": \"testInstitution\", \"eighteenYears\": \"true\"}"))
+                .andExpect(status().isConflict());
+    }
+
+
 }

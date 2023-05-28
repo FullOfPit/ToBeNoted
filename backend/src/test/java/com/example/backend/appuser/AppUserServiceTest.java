@@ -183,7 +183,7 @@ class AppUserServiceTest {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 TEST_USER.getUsername(),
                 TEST_USER.getPassword(),
-                List.of(new SimpleGrantedAuthority(ADMIN_ROLE))
+                List.of(new SimpleGrantedAuthority("ROLE_" + ADMIN_ROLE))
         );
 
         when(appUserRepository.findByUsername("testUsername")).thenReturn(Optional.empty());
@@ -194,7 +194,7 @@ class AppUserServiceTest {
         //When
         AppUser appUser = this.appUserService.create(TEST_USER);
         //Then
-        Assertions.assertEquals(ADMIN_ROLE, appUser.getRole());
+        Assertions.assertEquals(TEST_USER.getRole(), appUser.getRole());
         Assertions.assertEquals("", appUser.getPassword());
     }
 
