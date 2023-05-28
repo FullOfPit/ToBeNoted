@@ -20,8 +20,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
-        return http.
-                csrf().disable()
+        return http
+                .csrf().disable()
                 .httpBasic().and()
                 .httpBasic().authenticationEntryPoint(new AuthenticationPopUpBlock()).and()
                 .authorizeHttpRequests()
