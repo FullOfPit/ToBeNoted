@@ -304,5 +304,4 @@ class AppUserServiceTest {
         //THEN
         verify(appUserRepository).deleteById(TEST_USER.id);
     }
-
 }
