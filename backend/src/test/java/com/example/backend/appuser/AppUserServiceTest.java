@@ -104,7 +104,7 @@ class AppUserServiceTest {
         when(appUserRepository.findByUsername(TEST_USER.getUsername())).thenReturn(Optional.of(TEST_USER));
         //When - Then
         try {
-            AppUser actual = appUserService.create(TEST_USER);
+            appUserService.create(TEST_USER);
             Assertions.fail();
         } catch (ResponseStatusException exception) {
             Assertions.assertEquals(HttpStatus.CONFLICT, exception.getStatus());
@@ -264,7 +264,12 @@ class AppUserServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
         //WHEN - THEN
-        Assertions.assertThrows(ResponseStatusException.class, () -> appUserService.deleteStaffMemberById(TEST_USER.id));
+        try {
+            appUserService.deleteStaffMemberById(TEST_USER.id);
+            Assertions.fail();
+        } catch (ResponseStatusException e) {
+            Assertions.assertEquals(HttpStatus.FORBIDDEN, e.getStatus());
+        }
     }
 
     @Test
