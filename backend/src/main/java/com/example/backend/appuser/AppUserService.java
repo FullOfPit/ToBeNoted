@@ -32,6 +32,13 @@ public class AppUserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    /*
+    @Todo
+    Analyze possible overlap of this create() and createNewStaffMember()
+    Streamline into one method, that decided whether to create a StaffMember or not and then calls a method?
+    */
+
+
     public AppUser create(AppUser appUser) {
 
         if (this.appUserRepository.findByUsername(appUser.getUsername()).isPresent()) {
@@ -81,12 +88,22 @@ public class AppUserService {
         return this.appUserRepository.save(newStaffUser);
     }
 
-    public void deleteStaffMemberById(AppUser currentManagerUser, String id) {
-        AppUser staffMemberToDelete = this.appUserRepository.findById(id).orElseThrow();
-        if (currentManagerUser.getRole().equals(BASIC_ROLE) &&
-                        staffMemberToDelete.getInstitution().equals(currentManagerUser.getInstitution()))
-        {
-            this.appUserRepository.deleteById(id);
+    public void deleteStaffMemberById(String id) {
+
+        if (
+                SecurityContextHolder.getContext()
+                        .getAuthentication()
+                        .getAuthorities()
+                        .stream()
+                        .noneMatch(authority -> authority.getAuthority().equals(ADMIN_ROLE))
+        ) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
+
+        if (!this.appUserRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        this.appUserRepository.deleteById(id);
     }
 }

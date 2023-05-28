@@ -45,8 +45,7 @@ public class AppUserController {
 
     @DeleteMapping("/staff/{id}")
     public void deleteStaffMemberById(@PathVariable String id) {
-        AppUser currentManagerUser = this.me();
-        this.appUserService.deleteStaffMemberById(currentManagerUser, id);
+        this.appUserService.deleteStaffMemberById(id);
     }
 
     @GetMapping("/logout")

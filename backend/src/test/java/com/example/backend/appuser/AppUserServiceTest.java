@@ -15,15 +15,12 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -49,6 +46,7 @@ class AppUserServiceTest {
     );
     private static final String ADMIN_ROLE = "ADMIN";
     private static final String BASIC_ROLE = "STAFF";
+    private static final String INSTITUTION_ONE = "Institution_One";
 
 
     @Test
@@ -220,7 +218,6 @@ class AppUserServiceTest {
     private static Stream<Arguments> findBasicRoleUserByInstitutionAndRoleWithoutPasswordFactory() {
 
         final String NON_EXISTENT = "Non_Existent";
-        final String INSTITUTION_ONE = "Institution_One";
 
         AppUser institutionOneUser = new AppUser(
                 " ",
@@ -236,4 +233,76 @@ class AppUserServiceTest {
                 Arguments.arguments(INSTITUTION_ONE, BASIC_ROLE, List.of(institutionOneUser), List.of(institutionOneUser))
         );
     }
+
+    @Test
+    void createNewStaffMember_ReturnsNewStaffMember_WhenStaffMemberSaved() {
+        //GIVEN
+        when(appUserRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        //WHEN
+        AppUser actual = this.appUserService.createNewStaffMember(TEST_USER, INSTITUTION_ONE);
+        //THEN
+        Assertions.assertEquals(TEST_USER.getId(), actual.getId());
+        Assertions.assertEquals(TEST_USER.getUsername(), actual.getUsername());
+        Assertions.assertEquals("", actual.getPassword());
+        Assertions.assertEquals(INSTITUTION_ONE, actual.getInstitution());
+        Assertions.assertEquals(BASIC_ROLE, actual.getRole());
+        Assertions.assertTrue(actual.isEighteenYears());
+    }
+
+    @Test
+    void deleteStaffMemberById_ThrowsForbiddenStatusException_WhenDeletingUserNotAdmin() {
+        //GIVEN
+        SecurityContext securityContext = mock(SecurityContext.class);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                TEST_USER.getUsername(),
+                TEST_USER.getPassword(),
+                List.of(new SimpleGrantedAuthority(BASIC_ROLE))
+        );
+
+        when(appUserRepository.findById(TEST_USER.getId())).thenReturn(Optional.of(TEST_USER));
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        //WHEN - THEN
+        Assertions.assertThrows(ResponseStatusException.class, () -> appUserService.deleteStaffMemberById(TEST_USER.id));
+    }
+
+    @Test
+    void deleteStaffMemberById_ThrowsResponseStatusException_WhenStaffMemberNotFound() {
+        //GIVEN
+        SecurityContext securityContext = mock(SecurityContext.class);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                TEST_USER.getUsername(),
+                TEST_USER.getPassword(),
+                List.of(new SimpleGrantedAuthority(ADMIN_ROLE))
+        );
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(appUserRepository.existsById(TEST_USER.id)).thenReturn(false);
+        //WHEN - THEN
+        Assertions.assertThrows(ResponseStatusException.class, () -> appUserService.deleteStaffMemberById(TEST_USER.id));
+    }
+
+    @Test
+    void deleteStaffMemberById_DeletesStaffMember_WhenStaffMemberFound() {
+        //GIVEN
+        SecurityContext securityContext = mock(SecurityContext.class);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                TEST_USER.getUsername(),
+                TEST_USER.getPassword(),
+                List.of(new SimpleGrantedAuthority(ADMIN_ROLE))
+        );
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(appUserRepository.existsById(TEST_USER.id)).thenReturn(true);
+        //WHEN
+        appUserService.deleteStaffMemberById(TEST_USER.id);
+        //THEN
+        verify(appUserRepository).deleteById(TEST_USER.id);
+    }
+
 }
