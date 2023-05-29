@@ -32,7 +32,7 @@ public class AppUserController {
     }
 
     @GetMapping("/staff")
-    public List<AppUser> getAllStaffMemberWithoutPassword () {
+    public List<AppUser> getAllStaffMembersWithoutPassword() {
         AppUser currentUser = this.me();
         return this.appUserService.findBasicRoleUserByInstitutionAndRoleWithoutPassword(currentUser.getInstitution());
     }
@@ -43,7 +43,7 @@ public class AppUserController {
         return this.appUserService.createNewStaffMember(newStaffUser, currentManagerUser.getInstitution());
     }
 
-    @DeleteMapping("/staff/{id}")
+    @DeleteMapping("/{id}")
     public void deleteStaffMemberById(@PathVariable String id) {
         this.appUserService.deleteStaffMemberById(id);
     }

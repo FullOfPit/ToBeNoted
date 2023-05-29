@@ -1,6 +1,7 @@
 package com.example.backend.appuser;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,6 +9,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -25,7 +27,8 @@ class AppUserControllerTest {
     private static final AppUser TEST_STAFF_USER_DB = new AppUser(
             "testId",
             "testUsername",
-            "$2a$10$G09nodAof5kOyPSMcTcy2.ebSVoInWHbS1HgpAVlXJYmeHLNBEqk2",
+            "$2a$10$SyB968cGnwV474QXFOkyEe88fEN8VSw7EIvdefO7sVmj0vJikFjW.",
+            //password = "pw1"
             "testInstitution",
             "STAFF",
             true
@@ -35,11 +38,11 @@ class AppUserControllerTest {
             "testId",
             "testUsername",
             "$2a$10$G09nodAof5kOyPSMcTcy2.ebSVoInWHbS1HgpAVlXJYmeHLNBEqk2",
+            //password = "password"
             "testInstitution",
             "ADMIN",
             true
     );
-    //$2a$10$G09nodAof5kOyPSMcTcy2.ebSVoInWHbS1HgpAVlXJYmeHLNBEqk2
 
     @Test
     void login_returnsUnauthorized_whenNotLoggedIn() throws Exception {
@@ -52,7 +55,7 @@ class AppUserControllerTest {
         this.appUserRepository.save(TEST_STAFF_USER_DB);
 
         mvc.perform(post("/api/app-users/login")
-                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnRlc3RQYXNzd29yZA=="))
+                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnB3MQ=="))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.password").value(""));
     }
@@ -78,7 +81,7 @@ class AppUserControllerTest {
         this.appUserRepository.save(TEST_STAFF_USER_DB);
 
         mvc.perform(get("/api/app-users/me")
-                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnRlc3RQYXNzd29yZA=="))
+                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnB3MQ=="))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.password").value(""));
     }
@@ -125,6 +128,23 @@ class AppUserControllerTest {
 
     //TODO: GetAllStaffMembersWithoutPassword - check for roles
     //TODO: DeleteById - check for admin, check for staff (FORBIDDEN), check for non-existing user (NOT_FOUND)
+    /*
+    @Test
+    @WithMockUser(roles = {"ADMIN"})
+    void create_ReturnsUsers_WhenUserOfDifferentRolesCreatedByAdmin_WithMockUser() throws Exception {
+
+        mvc.perform(post("/api/app-users")
+                        .contentType("application/json")
+                        .content("{\"role\": \"ADMIN\", \"username\": \"NewTestUser\", \"password\": \"NewTestPassword\", \"institution\": \"testInstitution\", \"eighteenYears\": \"true\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("NewTestUser"))
+                .andExpect(jsonPath("$.password").value(""))
+                .andExpect(jsonPath("$.institution").value("testInstitution"))
+                .andExpect(jsonPath("$.role").value("ADMIN"))
+                .andExpect(jsonPath("$.eighteenYears").value("true"));
+    }
+
+     */
 
     @Test
     void create_ReturnsConflict_WhenUserAlreadyRegistered() throws Exception {
@@ -137,7 +157,7 @@ class AppUserControllerTest {
                 .andExpect(status().isConflict());
 
         mvc.perform(post("/api/app-users")
-                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnRlc3RQYXNzd29yZA==")
+                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnB3MQ==")
                         .contentType("application/json")
                         .content("{\"role\": \"STAFF\", \"username\": \"testUsername\", \"password\": \"testPassword\", \"institution\": \"testInstitution\", \"eighteenYears\": \"true\"}"))
                 .andExpect(status().isConflict());
@@ -149,5 +169,55 @@ class AppUserControllerTest {
                 .andExpect(status().isConflict());
     }
 
+    @Test
+    void getAllStaffMembersWithoutPassword_ReturnsListOfStaffMembersByInstitution_WhenRequestedByManager() throws Exception {
+        AppUser testStaffOne = new AppUser("1", "testStaffOne", "testPassword", "testInstitution", "STAFF", true);
+        AppUser testStaffTwo = new AppUser("2", "testStaffTwo", "testPassword", "testInstitutionTwo", "STAFF", true);
+
+        this.appUserRepository.save(testStaffOne);
+        this.appUserRepository.save(testStaffTwo);
+        this.appUserRepository.save(TEST_ADMIN_USER_DB);
+
+        mvc.perform(get("/api/app-users/staff")
+                .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnRlc3RQYXNzd29yZA=="))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].username").value("testStaffOne"))
+                .andExpect(jsonPath("$[0].password").value(""));
+    }
+
+    @Test
+    void deleteById_ReturnsNoContent_WhenUserIsDeleted() throws Exception {
+        AppUser testStaffOne = new AppUser("1", "testStaffOne", "testPassword", "testInstitution", "STAFF", true);
+
+        this.appUserRepository.save(testStaffOne);
+        this.appUserRepository.save(TEST_ADMIN_USER_DB);
+
+        //Delete by admin
+        mvc.perform(delete("/api/app-users/1")
+                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnRlc3RQYXNzd29yZA=="))
+                .andExpect(status().isOk());
+
+        mvc.perform(get("/api/app-users/staff")
+                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnRlc3RQYXNzd29yZA=="))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+
+        mvc.perform(delete("/api/app-users/2")
+                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnRlc3RQYXNzd29yZA=="))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteById_ReturnsForbidden_WhenStaffUserUsed() throws Exception {
+        AppUser testStaffOne = new AppUser("1", "testStaffOne", "testPassword", "testInstitution", "STAFF", true);
+
+        this.appUserRepository.save(testStaffOne);
+        this.appUserRepository.save(TEST_STAFF_USER_DB);
+
+        mvc.perform(delete("/api/app-users/1")
+                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnB3MQ=="))
+                .andExpect(status().isForbidden());
+    }
 
 }
