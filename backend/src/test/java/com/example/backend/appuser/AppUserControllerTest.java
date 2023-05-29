@@ -126,8 +126,6 @@ class AppUserControllerTest {
                 .andExpect(jsonPath("$.eighteenYears").value("true"));
     }
 
-    //TODO: GetAllStaffMembersWithoutPassword - check for roles
-    //TODO: DeleteById - check for admin, check for staff (FORBIDDEN), check for non-existing user (NOT_FOUND)
     /*
     @Test
     @WithMockUser(roles = {"ADMIN"})
@@ -157,7 +155,7 @@ class AppUserControllerTest {
                 .andExpect(status().isConflict());
 
         mvc.perform(post("/api/app-users")
-                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnB3MQ==")
+                        .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnRlc3RQYXNzd29yZA==")
                         .contentType("application/json")
                         .content("{\"role\": \"STAFF\", \"username\": \"testUsername\", \"password\": \"testPassword\", \"institution\": \"testInstitution\", \"eighteenYears\": \"true\"}"))
                 .andExpect(status().isConflict());
@@ -219,5 +217,4 @@ class AppUserControllerTest {
                         .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnB3MQ=="))
                 .andExpect(status().isForbidden());
     }
-
 }

@@ -298,7 +298,7 @@ class AppUserServiceTest {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 TEST_USER.getUsername(),
                 TEST_USER.getPassword(),
-                List.of(new SimpleGrantedAuthority(ADMIN_ROLE))
+                List.of(new SimpleGrantedAuthority("ROLE_" + ADMIN_ROLE))
         );
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
