@@ -93,7 +93,7 @@ public class AppUserService {
                         .getAuthentication()
                         .getAuthorities()
                         .stream()
-                        .noneMatch(authority -> authority.getAuthority().equals(ADMIN_ROLE))
+                        .noneMatch(authority -> authority.getAuthority().equals("ROLE_" + ADMIN_ROLE))
         ) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
