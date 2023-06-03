@@ -16,6 +16,15 @@ public class AppUserService {
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private static final String ADMIN_ROLE = "ADMIN";
+    private static final String BASIC_ROLE = "STAFF";
+
+    public AppUser findByUsernameWithoutPassword(String username) {
+        AppUser appUser = this.findByUsername(username);
+        appUser.setPassword("");
+        return appUser;
+    }
+
     public AppUser findByUsername(String username) {
 
         return this.appUserRepository
@@ -23,11 +32,12 @@ public class AppUserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public AppUser findByUsernameWithoutPassword(String username) {
-        AppUser appUser = this.findByUsername(username);
-        appUser.setPassword("");
-        return appUser;
-    }
+    /*
+    @Todo
+    Analyze possible overlap of this create() and createNewStaffMember()
+    Streamline into one method, that decided whether to create a StaffMember or not and then calls a method?
+    */
+
 
     public AppUser create(AppUser appUser) {
 
@@ -51,9 +61,9 @@ public class AppUserService {
                         .getAuthentication()
                         .getAuthorities()
                         .stream()
-                        .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ADMIN"))
+                        .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_" + ADMIN_ROLE))
         ) {
-            appUser.setRole("BASIC");
+            appUser.setRole(BASIC_ROLE);
         }
 
         this.appUserRepository.save(appUser);
@@ -63,23 +73,35 @@ public class AppUserService {
         return appUser;
     }
 
-    public List<AppUser> findStaffByInstitutionAndRoleWithoutPassword(String institution) {
-        return this.appUserRepository.findAllByInstitutionAndRole(institution, "STAFF");
+    public List<AppUser> findBasicRoleUserByInstitutionAndRoleWithoutPassword(String institution) {
+        List<AppUser> userList = this.appUserRepository.findAllByInstitutionAndRole(institution, BASIC_ROLE);
+        userList.forEach(user -> user.setPassword(""));
+        return userList;
     }
 
     public AppUser createNewStaffMember(AppUser newStaffUser, String institution) {
         newStaffUser.setInstitution(institution);
-        newStaffUser.setRole("STAFF");
+        newStaffUser.setRole(BASIC_ROLE);
         newStaffUser.setPassword("");
         return this.appUserRepository.save(newStaffUser);
     }
 
-    public void deleteStaffMemberById(AppUser currentManagerUser,String id) {
-        AppUser staffMemberToDelete = this.appUserRepository.findById(id).orElseThrow();
-        if (currentManagerUser.getRole().equals("BASIC") &&
-                        staffMemberToDelete.getInstitution().equals(currentManagerUser.getInstitution()))
-        {
-            this.appUserRepository.deleteById(id);
+    public void deleteStaffMemberById(String id) {
+
+        if (
+                SecurityContextHolder.getContext()
+                        .getAuthentication()
+                        .getAuthorities()
+                        .stream()
+                        .noneMatch(authority -> authority.getAuthority().equals("ROLE_" + ADMIN_ROLE))
+        ) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
+
+        if (!this.appUserRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        this.appUserRepository.deleteById(id);
     }
 }

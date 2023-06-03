@@ -22,18 +22,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
         return http
                 .csrf().disable()
-                .httpBasic()
-                //.authenticationEntryPoint(((request, response, authException) -> response.sendError(HttpServletResponse.SC_NOT_FOUND)))
-                .and()
+                .httpBasic().and()
                 .httpBasic().authenticationEntryPoint(new AuthenticationPopUpBlock()).and()
                 .authorizeHttpRequests()
                 .antMatchers(HttpMethod.POST, "/api/app-users").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/app-users/login").permitAll()
+                //.antMatchers(HttpMethod.POST, "/api/app-users/login").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .anyRequest()
                 .permitAll()
-                .and()
-                .build();
+                .and().build();
     }
 
     //TODO

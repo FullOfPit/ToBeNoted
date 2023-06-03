@@ -43,9 +43,9 @@ public class AppUserController {
     }
 
     @GetMapping("/staff")
-    public List<AppUser> getAllStaffMemberWithoutPassword () {
+    public List<AppUser> getAllStaffMembersWithoutPassword() {
         AppUser currentUser = this.me();
-        return this.appUserService.findStaffByInstitutionAndRoleWithoutPassword(currentUser.getInstitution());
+        return this.appUserService.findBasicRoleUserByInstitutionAndRoleWithoutPassword(currentUser.getInstitution());
     }
 
     @PostMapping("/staff")
@@ -54,10 +54,9 @@ public class AppUserController {
         return this.appUserService.createNewStaffMember(newStaffUser, currentManagerUser.getInstitution());
     }
 
-    @DeleteMapping("/staff/{id}")
+    @DeleteMapping("/{id}")
     public void deleteStaffMemberById(@PathVariable String id) {
-        AppUser currentManagerUser = this.me();
-        this.appUserService.deleteStaffMemberById(currentManagerUser, id);
+        this.appUserService.deleteStaffMemberById(id);
     }
 
     @GetMapping("/logout")
