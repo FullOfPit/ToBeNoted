@@ -29,7 +29,6 @@ export default function LoginPageForm (
 
     const mainTheme = useTheme();
 
-
     return (
         <form
             onSubmit={(event) => userCredentialProp.login(event)}
@@ -81,7 +80,7 @@ export default function LoginPageForm (
                     />
 
                     {
-                        userCredentialProp.userCredentials.credentialsFound === -1 &&
+                        userCredentialProp.userCredentials.credentialsFound === "NOT_FOUND" &&
                         <Typography aria-label={"warning"}>
                             Username or password incorrect!
                         </Typography>
