@@ -28,7 +28,7 @@ export default function Login() {
                     setCredentials({...credentials, credentialsFound: -1});
                     setTimeout(() => {
                         setCredentials({...credentials, credentialsFound: 0});
-                    }, 5000);
+                    }, 7500);
                     console.log("not found");
                 } else {
                     console.log(error)

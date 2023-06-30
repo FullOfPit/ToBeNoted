@@ -3,12 +3,11 @@ import {
     FormControl,
     IconButton,
     InputAdornment,
-    TextField, Typography
+    TextField, Typography, useTheme
 } from "@mui/material";
 import React, {FormEvent, useState} from "react";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {UserCredentials} from "../types/UserCredentials";
-import {mainTheme} from "../themes/MainTheme";
 
 
 export default function LoginPageForm (
@@ -27,6 +26,8 @@ export default function LoginPageForm (
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
+
+    const mainTheme = useTheme();
 
 
     return (
@@ -66,7 +67,6 @@ export default function LoginPageForm (
                         InputProps={{
                             endAdornment:
                                 <InputAdornment position="end">
-
                                     <IconButton
                                     aria-label="toggle password visibility"
                                     onClick={handleClickShowPassword}
@@ -79,12 +79,14 @@ export default function LoginPageForm (
                                 </InputAdornment>
                         }}
                     />
+
                     {
                         userCredentialProp.userCredentials.credentialsFound === -1 &&
-                        <Typography>
+                        <Typography aria-label={"warning"}>
                             Username or password incorrect!
                         </Typography>
                     }
+
                 </FormControl>
 
                 <FormControl

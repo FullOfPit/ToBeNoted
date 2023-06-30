@@ -44,6 +44,19 @@ export const mainTheme = createTheme({
                     }
                 }
             ]
+        },
+
+        MuiTypography: {
+            variants: [
+                {
+                    props: {"aria-label": "warning"},
+                    style: {
+                        color: "red",
+                        fontSize: "0.7rem",
+                        fontStyle: "italic"
+                    }
+                }
+            ]
         }
 
     },
