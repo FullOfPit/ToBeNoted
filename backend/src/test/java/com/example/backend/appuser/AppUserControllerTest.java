@@ -8,6 +8,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -202,6 +203,22 @@ class AppUserControllerTest {
 
         mvc.perform(delete("/api/app-users/2")
                         .header("Authorization", "Basic dGVzdFVzZXJuYW1lOnRlc3RQYXNzd29yZA=="))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "testUsername", password = "testPassword")
+    void login_Returns404_WhenUserNotRegistered() throws Exception {
+
+        this.mvc.perform(post("/api/app-users/login"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void login_Returns404_WhenUserNotRegistered_UsingHeaderRequest() throws Exception {
+
+        this.mvc.perform(post("/api/app-users/login")
+                        .header("Authorization", "Basic Zzpn"))
                 .andExpect(status().isNotFound());
     }
 

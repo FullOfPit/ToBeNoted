@@ -3,7 +3,7 @@ import {
     FormControl,
     IconButton,
     InputAdornment,
-    TextField
+    TextField, Typography
 } from "@mui/material";
 import React, {FormEvent, useState} from "react";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
@@ -47,6 +47,7 @@ export default function LoginPageForm (
                         value={userCredentialProp.userCredentials.username}
                         onChange={(event) => userCredentialProp.setUserCredentials(event)}
                     />
+
                 </FormControl>
 
                 <FormControl
@@ -78,6 +79,12 @@ export default function LoginPageForm (
                                 </InputAdornment>
                         }}
                     />
+                    {
+                        userCredentialProp.userCredentials.credentialsFound === -1 &&
+                        <Typography>
+                            Username or password incorrect!
+                        </Typography>
+                    }
                 </FormControl>
 
                 <FormControl

@@ -29,7 +29,7 @@ public class AppUserService {
 
         return this.appUserRepository
                 .findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
     }
 
     /*

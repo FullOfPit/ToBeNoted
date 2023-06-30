@@ -16,7 +16,7 @@ public class AppUserController {
 
     @PostMapping("/login")
     public AppUser login() {
-        return this.me();
+       return this.me();
     }
 
     @GetMapping("/me")
