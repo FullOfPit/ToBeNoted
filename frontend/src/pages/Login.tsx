@@ -25,10 +25,10 @@ export default function Login() {
                 navigate("/")
             } catch (error) {
                 if (error instanceof AxiosError && error.response && error.response.status === 404) {
-                    setCredentials({...credentials, credentialsFound: -1});
+                    setCredentials({...credentials, credentialsFound: "NOT_FOUND"});
                     setTimeout(() => {
-                        setCredentials({...credentials, credentialsFound: 0});
-                    }, 5000);
+                        setCredentials({...credentials, credentialsFound: "FOUND"});
+                    }, 7500);
                     console.log("not found");
                 } else {
                     console.log(error)
